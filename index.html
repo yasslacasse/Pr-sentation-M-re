@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shu'ayb — La Voix de la Justice</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#05090f;font-family:Georgia,serif;color:#e8d9a0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:2rem;overflow-x:hidden}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{r:22}50%{r:26}}
+  .stage{width:100%;max-width:880px;padding:0 1.2rem}
+  .progress-bar{width:100%;max-width:880px;padding:.8rem 1.2rem .3rem;display:flex;flex-direction:column;gap:5px}
+  .progress-meta{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.5px}
+  .progress-track{height:2px;background:#0d1520;border-radius:4px}
+  .progress-fill{height:2px;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1),background .4s}
+  .card{border-radius:22px;overflow:hidden;min-height:420px;position:relative;transition:background .5s,box-shadow .5s}
+  .card-illus{position:absolute;inset:0;pointer-events:none;border-radius:22px;overflow:hidden}
+  .card-illus svg{width:100%;height:100%}
+  .card-body{position:relative;z-index:2}
+  .nav-row{display:flex;align-items:center;gap:14px;margin-top:14px;width:100%;max-width:880px;padding:0 1.2rem;justify-content:center}
+  .nav-btn{padding:8px 18px;border-radius:10px;border:none;font-family:Georgia,serif;font-size:13px;cursor:pointer;transition:all .2s}
+  .nav-btn:disabled{cursor:default}
+  .dots{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:320px}
+  .dot{height:6px;border-radius:50px;border:none;cursor:pointer;padding:0;transition:all .28s}
+  .hint{margin-top:8px;font-size:11px;color:#151e28;text-align:center}
+
+  /* SLIDE CONTENT STYLES */
+  .cover-wrap{min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;padding:2.5rem 2.8rem}
+  .cover-ar{font-size:26px;letter-spacing:2px;margin-bottom:4px;opacity:.65}
+  .cover-title{font-size:58px;font-weight:bold;color:#F5E6B0;line-height:1;margin:0 0 10px;letter-spacing:-1px}
+  .cover-sub{font-size:22px;font-style:italic;margin-bottom:16px}
+  .cover-tag{font-size:11px;color:#334455;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+  .quote-wrap{min-height:360px;display:flex;flex-direction:column;justify-content:center;padding:2.5rem 2.8rem}
+  .big-quote{font-size:28px;color:#F5E6B0;line-height:1.4;font-style:italic;margin:0 0 22px}
+  .body-text{font-size:16px;color:#b0c0cc;line-height:1.85;max-width:580px}
+  .slide-wrap{padding:2rem 2.8rem;min-height:360px}
+  .slide-wrap-sm{padding:1.6rem 2.8rem;min-height:380px}
+  .chap{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;opacity:.7}
+  .slide-title{font-size:26px;color:#F5E6B0;margin:0 0 18px;font-weight:bold}
+  .slide-title-lg{font-size:28px;color:#F5E6B0;margin:0 0 22px;font-weight:bold}
+  .fact-row{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.06);padding:10px 0}
+  .fact-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;min-width:96px;flex-shrink:0;padding-top:3px}
+  .fact-sep{width:1px;margin:0 14px;flex-shrink:0;align-self:stretch;min-height:14px}
+  .fact-value{font-size:14px;color:#d0e0ec;line-height:1.6}
+  .portrait-desc{font-size:14px;color:#a0b0c0;line-height:1.8;margin:0 0 18px;max-width:560px;border-left-width:3px;border-left-style:solid;padding-left:14px}
+  .quality-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-bottom:16px}
+  .quality-row{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .quality-word{font-size:13px;font-weight:bold;min-width:92px}
+  .quality-line{font-size:12px;color:#7080a0;line-height:1.5}
+  .pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  .pillar-card{border-radius:14px;padding:12px 11px}
+  .pillar-icon{font-size:19px;margin-bottom:6px}
+  .pillar-label{font-size:12px;font-weight:bold;margin-bottom:3px}
+  .pillar-desc{font-size:11px;color:#808898;line-height:1.55}
+  .blockquote-verse{border-left-width:3px;border-left-style:solid;padding-left:20px;margin:0 0 4px;font-style:italic;font-size:16px;color:#b0c0d0;line-height:1.85}
+  .verse-ref-sm{font-size:10px;padding-left:23px;margin-bottom:20px;opacity:.55}
+  .insight-box{border-radius:12px;padding:13px 17px}
+  .insight-text{font-size:14px;line-height:1.8;margin:0}
+  .steps-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+  .step-card{display:flex;gap:14px;align-items:flex-start;border-radius:12px;padding:11px 15px}
+  .step-n{font-size:15px;font-weight:bold;font-family:Georgia,serif;flex-shrink:0;min-width:26px;opacity:.4}
+  .step-label{font-size:13px;font-weight:bold;color:#c0e0cc;margin-bottom:3px}
+  .step-text{font-size:12px;color:#608070;line-height:1.6;font-style:italic}
+  .revelation-verse{border-left-width:3px;border-left-style:solid;padding-left:20px;margin:0 0 20px;font-style:italic;font-size:15px;color:#e8d89a;line-height:1.9}
+  .ethics-body{border-left-width:3px;border-left-style:solid;padding-left:16px;margin-bottom:16px}
+  .ethics-text{font-size:14px;color:#90a898;line-height:1.82;margin:0}
+  .ethics-insight{border-radius:12px;padding:11px 15px;margin-top:10px}
+  .ethics-insight-text{font-size:13px;color:#608070;line-height:1.75;margin:0;font-style:italic}
+  .traits-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-bottom:20px}
+  .trait-row{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .trait-word{font-size:14px;font-weight:bold;min-width:82px}
+  .trait-line{font-size:12px;color:#6070a0;line-height:1.5}
+  .dialogue-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px}
+  .dialogue-head{font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;opacity:.8}
+  .dialogue-bubble{border-radius:12px;padding:10px 13px;margin-bottom:9px;font-size:12px;font-style:italic;line-height:1.65}
+  .solitude-wrap{min-height:360px;display:flex;flex-direction:column;justify-content:center;padding:2.5rem 2.8rem}
+  .big-quote2{font-size:36px;color:#F5E6B0;line-height:1.2;font-style:italic;margin:0 0 22px}
+  .solitude-body{font-size:15px;color:#9aa8b8;line-height:1.85;max-width:560px;margin:0 0 18px}
+  .coda-box{display:inline-block;border-radius:10px;padding:9px 16px}
+  .coda-text{font-size:13px;font-style:italic}
+  .events-list{display:flex;flex-direction:column;gap:8px;margin-bottom:13px}
+  .event-card{display:flex;gap:12px;align-items:flex-start;border-radius:12px;padding:10px 13px}
+  .event-bar{width:3px;border-radius:3px;flex-shrink:0;align-self:stretch;min-height:20px}
+  .event-title{font-size:13px;font-weight:bold;margin-bottom:2px}
+  .event-desc{font-size:12px;color:#8890b8;line-height:1.55}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+  .stat-card{border-radius:14px;padding:16px 12px;text-align:center}
+  .stat-n{font-size:34px;font-weight:bold;line-height:1;margin-bottom:8px}
+  .stat-label{font-size:11px;color:#708080;line-height:1.65;white-space:pre-line}
+  .legacy-note{border-left-width:3px;border-left-style:solid;padding-left:16px}
+  .legacy-note-text{font-size:14px;color:#a0b0b8;line-height:1.85;margin:0;font-style:italic}
+  .lessons-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .lesson-card{border-radius:13px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start}
+  .lesson-n{font-size:13px;font-weight:bold;font-family:Georgia,serif;min-width:22px;flex-shrink:0;opacity:.55}
+  .lesson-title{font-size:12px;font-weight:bold;color:#D8C880;margin-bottom:4px;line-height:1.3}
+  .lesson-body{font-size:11px;color:#608068;line-height:1.65}
+  .mirror-wrap{padding:2.2rem 2.8rem;min-height:370px}
+  .mirror-question{font-size:22px;color:#F5E6B0;line-height:1.45;font-style:italic;margin:0 0 24px;max-width:580px}
+  .reflections{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+  .reflection-row{display:flex;gap:12px;align-items:center}
+  .reflection-num{width:26px;height:26px;border-radius:50%;border-width:1.5px;border-style:solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
+  .reflection-text{font-size:14px;color:#a0b0c0;line-height:1.6}
+  .mirror-coda{border-left-width:3px;border-left-style:solid;padding-left:16px}
+  .mirror-coda-text{font-size:13px;font-style:italic;margin:0;line-height:1.75;opacity:.8}
+  .closing-wrap{min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;padding:2.5rem 2.8rem}
+  .closing-pills{display:flex;gap:12px;margin-bottom:22px}
+  .closing-pill{border-radius:12px;padding:8px 18px;font-size:15px;font-weight:bold;border-width:1.5px;border-style:solid}
+  .dua-box{border-radius:14px;padding:16px 20px;margin-top:14px;text-align:center}
+  .dua-arabic{font-size:20px;line-height:2}
+  .dua-fr{font-size:13px;font-style:italic;margin:4px 0 0;color:#8090a0}
+  .verse-box{border-radius:14px;padding:13px 17px;margin-top:12px}
+  .verse-text{font-size:13px;font-style:italic;color:#e8d89a;line-height:1.85;margin:0}
+  .verse-ref{font-size:11px;text-align:right;margin:5px 0 0;letter-spacing:.5px}
+
+  /* ANIMATIONS — staggered on slide change */
+  .anim-0{animation:fadeUp .6s .05s both}
+  .anim-1{animation:fadeUp .6s .18s both}
+  .anim-2{animation:fadeUp .6s .30s both}
+  .anim-3{animation:fadeUp .6s .43s both}
+  .anim-4{animation:fadeUp .6s .55s both}
+  .anim-5{animation:fadeUp .6s .68s both}
+  .anim-6{animation:fadeUp .6s .80s both}
+  .anim-7{animation:fadeUp .6s .90s both}
+</style>
+</head>
+<body>
+
+<div class="progress-bar">
+  <div class="progress-meta">
+    <span id="chap-label" style="opacity:.6"></span>
+    <span id="slide-num" style="color:#253545"></span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+</div>
+
+<div class="stage">
+  <div class="card" id="card">
+    <div class="card-illus" id="card-illus"></div>
+    <div class="card-body" id="card-body"></div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="btn-prev" onclick="go(-1)">← Préc.</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="btn-next" onclick="go(1)">Suiv. →</button>
+</div>
+<div class="hint">← → clavier</div>
+
+<script>
+const SLIDES = [
+  {type:"cover",accent:"#C9991A",bg:"#05090f",chapter:"",
+   titleAr:"شعيب عليه السلام",title:"Shu'ayb",sub:"La Voix de la Justice",
+   tagline:"Prophète de Madyan · Orateur des Prophètes · Exemple de lutte contre la corruption",
+   verse:{t:"« Et aux Madyan, leur frère Shu'ayb. Il dit : Ô mon peuple, adorez Allah. Vous n'avez point de divinité en dehors de Lui. Une preuve vous est venue de votre Seigneur. Donnez donc la pleine mesure et le poids exact, et ne causez pas de tort aux gens dans leurs biens. »",r:"Sourate Al-A'râf 7:85"}},
+
+  {type:"quote",accent:"#9966CC",bg:"#08050f",chapter:"Prologue",
+   bigQuote:"Il y a 3 000 ans, au carrefour du monde antique…",
+   body:"Madyan. Une cité prospère sur les routes commerciales entre l'Arabie, l'Égypte et le Levant. Riche, influente — et pourtant moralement effondrée. La corruption n'y était pas une exception : elle était devenue la norme. C'est là qu'Allah envoya Shu'ayb."},
+
+  {type:"bio",accent:"#C9991A",bg:"#0f0700",chapter:"Section A — Contexte & Mission",
+   title:"Shu'ayb, prophète arabe",
+   facts:[
+     {l:"Origine",  v:"Issu du peuple de Madyan — prophète arabe comme Houd, Sâlih et Mohammed ﷺ"},
+     {l:"Territoire",v:"Nord-ouest de la péninsule arabique — actuelle Jordanie / Arabie, non loin de Sodome"},
+     {l:"Surnom",   v:"Khatîb ul-Anbiyâ' — l'Orateur des Prophètes, pour son éloquence et sa sagesse incomparables"},
+     {l:"Mission",  v:"Rappeler le tawhid et corriger les injustices économiques et sociales profondément enracinées"},
+   ]},
+
+  {type:"portrait",accent:"#9966CC",bg:"#080510",chapter:"Section A — Portrait intérieur",
+   title:"Un prophète de la miséricorde, pas de la colère",
+   qualities:[
+     {w:"Patience",  l:"Il supporte le rejet sans jamais céder à la rancœur ni à la vengeance"},
+     {w:"Compassion",l:"Il souffre pour son peuple davantage qu'il ne souffre à cause d'eux"},
+     {w:"Désintérêt",l:"Il ne cherche ni pouvoir, ni richesse, ni reconnaissance personnelle"},
+     {w:"Espérance", l:"Il ne désespère jamais de la miséricorde divine, même seul contre tous"},
+   ],
+   verse:{t:"« Je ne veux que la réforme autant que je peux. Ma réussite ne dépend que d'Allah. En Lui je place ma confiance et c'est à Lui que je reviens. »",r:"Sourate Hûd 11:88"}},
+
+  {type:"people",accent:"#D4814A",bg:"#0d0400",chapter:"Section B — Le peuple de Madyan",
+   title:"Les Madyanites : prospères et corrompus",
+   pillars:[
+     {icon:"⚖️",label:"Fraude",    desc:"Poids truqués, mesures trichées — ils exigeaient la pleine mesure pour eux, causaient perte pour les autres"},
+     {icon:"🛤️",label:"Racket",    desc:"Ils bloquaient les routes, imposaient des taxes illicites aux caravanes et intimidaient les voyageurs"},
+     {icon:"🪨",label:"Idolâtrie", desc:"Adoration des idoles et d'Al-Ayka, l'arbre sacré — abandonnant la foi monothéiste d'Ibrahim"},
+   ],
+   verse:{t:"« Malheur aux fraudeurs, qui, lorsqu'ils font mesurer pour eux-mêmes exigent la pleine mesure, mais qui, lorsqu'ils mesurent ou pèsent pour les autres, causent perte. »",r:"Sourate Al-Mutaffifin 83:1-3"}},
+
+  {type:"versedetail",accent:"#5577AA",bg:"#06080d",chapter:"Section B — L'injustice dans toute sa dimension",
+   title:"Ils coupaient la route d'Allah",
+   vHero:"« Et ne vous placez pas sur tout chemin, menaçant, empêchant du sentier d'Allah ceux qui croient en Lui, et cherchant à le rendre tortueux… et ne semez pas le désordre sur la terre après qu'elle a été réformée. »",
+   vRef:"Sourate Al-A'râf 7:86",
+   insight:"Au-delà de la fraude commerciale, les Madyanites bloquaient physiquement les routes, pillaient les caravanes et empêchaient les gens d'accéder à la foi. Leur injustice était à la fois économique, sociale et spirituelle — une corruption totale et systémique."},
+
+  {type:"tawhid",accent:"#1B9A5E",bg:"#040d06",chapter:"Section C — L'appel initial au tawhid",
+   title:"D'abord la foi. Ensuite, tout change.",
+   steps:[
+     {n:"01",label:"Restaurer le tawhid",             text:"« Adorez Allah — vous n'avez pas d'autre divinité que Lui. » C'est la base de tout. (Hûd 11:84)"},
+     {n:"02",label:"La foi produit la justice",        text:"Reconnaître l'unicité d'Allah, c'est accepter Ses règles dans tous les aspects de la vie"},
+     {n:"03",label:"Réforme intérieure avant sociale", text:"Changer une société commence par changer les cœurs — il appelle à la gratitude, pas à l'arrogance"},
+   ],
+   verse:{t:"« Ô mon peuple, adorez Allah ; vous n'avez pas de divinité en dehors de Lui. »",r:"Sourate Hûd 11:84"}},
+
+  {type:"revelation",accent:"#1B9A5E",bg:"#060d08",chapter:"Section C — Le message central",
+   eyebrow:"Sourate Hûd 11:84-85",
+   verse:"« Ô mon peuple ! Adorez Allah, vous n'avez pas d'autre divinité que Lui. Ne diminuez pas les mesures et les poids… Je crains pour vous le châtiment d'un jour terrible. Donnez la pleine mesure et le poids avec équité, ne lésez pas les gens dans leurs biens et ne semez pas la corruption sur la terre. »",
+   insight:"En une seule prise de parole, Shuʿayb unit tawhid et éthique. La foi ne peut être dissociée du comportement : croire en Allah tout en opprimant les faibles est une contradiction. La spiritualité authentique se traduit par la justice et l'honnêteté."},
+
+  {type:"ethics",accent:"#1B9A5E",bg:"#030d08",chapter:"Section D — Justice économique & honnêteté",
+   title:"Le halal suffit. L'injustice ne paie pas.",
+   body:"Les gains licites, même modestes, sont plus bénis que les profits de la tromperie — la prospérité véritable ne peut être fondée sur l'injustice.",
+   verse1:{t:"« Ce qui demeure auprès d'Allah est meilleur pour vous, si vous êtes croyants. Et je ne suis pas un gardien pour vous. »",r:"Sourate Hûd 11:86"},
+   insight:"Il ne se pose pas en censeur. Il responsabilise chaque individu devant Allah. Shu'ayb préfigure ce qu'on appelle aujourd'hui l'éthique des affaires et la responsabilité sociale."},
+
+  {type:"method",accent:"#9966CC",bg:"#080010",chapter:"Section A & F — Sa méthode prophétique",
+   title:"Ni violence. Ni silence.",
+   traits:[
+     {w:"Douceur",   l:"Il convainc avant de condamner — la pédagogie avant l'ultimatum"},
+     {w:"Fermeté",   l:"Il ne cède jamais sur l'essentiel, même sous la menace d'expulsion"},
+     {w:"Patience",  l:"Il répète, encore et encore, sans jamais désespérer de la miséricorde divine"},
+     {w:"Sincérité", l:"Il ne cherche ni pouvoir ni richesse — seulement le bien et le salut de son peuple"},
+   ],
+   verse:{t:"« Je ne veux que la réforme autant que je peux. Ma réussite ne dépend que d'Allah. »",r:"Sourate Hûd 11:88"}},
+
+  {type:"dialogue",accent:"#CC4444",bg:"#0d0000",chapter:"Section E — La réaction des notables",
+   labelL:"Les élites disent", labelR:"Il répond",
+   exchanges:[
+     {them:"« Ta prière t'ordonne-t-elle de nous faire abandonner ce que nos pères adoraient ou de ne plus disposer de nos biens comme nous voulons ? »",
+      him:"« Si je m'appuie sur une preuve évidente de mon Seigneur — je ne veux que votre réforme. Ma réussite ne dépend que d'Allah. »"},
+     {them:"« Sans ton clan, nous t'aurions lapidé ! Tu es faible parmi nous — tu n'es qu'un homme parmi nous. »",
+      him:"« Mon clan est-il plus puissant pour vous qu'Allah ? Agissez selon votre manière — moi j'agis. Vous saurez bientôt. »"},
+   ],
+   verse:{t:"« Nous t'expulserons de notre cité, ô Shu'ayb, toi et ceux qui ont cru avec toi, à moins que vous ne reveniez à notre religion. »",r:"Sourate Al-A'râf 7:88"}},
+
+  {type:"solitude",accent:"#5577AA",bg:"#030508",chapter:"Section F — La patience et la confiance en Allah",
+   bigQuote:"Seul contre tous — sans jamais fléchir.",
+   body:"Ferme, sincère, sans colère ni vengeance — il continua à conseiller, convaincu que la vérité triompherait, sans jamais désespérer de la miséricorde divine.",
+   coda:"Sabr et Tawakkul : la persévérance dans la vérité, et la confiance absolue en Allah. Ce n'est pas la passivité — c'est la paix au cœur de la tempête."},
+
+  {type:"punishment",accent:"#AA44FF",bg:"#08001f",chapter:"Section G — Le châtiment infligé à Madyan",
+   title:"La déflagration",
+   desc:"Après que toutes les chances de repentir eurent été offertes et refusées, le châtiment divin s'abattit — soudain, dévastateur, irréversible. Ce n'est pas une vengeance arbitraire : c'est la conséquence ultime d'une injustice persistante.",
+   events:[
+     {t:"As-Sâ'iqa",     d:"Le cri foudroyant — une déflagration qui anéantit Madyan totalement"},
+     {t:"Le tremblement", d:"« Le tremblement les saisit, et les voilà gisant dans leurs demeures. » (Al-A'râf 7:91)"},
+     {t:"Le cri du matin",d:"« Et le Cri les saisit au lever du soleil. » (Al-Hijr 15:73)"},
+     {t:"Les croyants",   d:"Shu'ayb et ses fidèles épargnés — sauvés par la miséricorde d'Allah"},
+   ],
+   verse:{t:"« Et lorsque vint Notre ordre, Nous sauvâmes Shu'ayb et ceux qui avaient cru avec lui, par une miséricorde de Notre part. »",r:"Sourate Hûd 11:94"}},
+
+  {type:"legacy",accent:"#C9991A",bg:"#07101f",chapter:"Section I — Shu'ayb dans le Coran",
+   title:"Ce que le Coran retient",
+   stats:[
+     {n:"4",   label:"sourates\nAl-A'râf · Hûd\nAsh-Shu'arâ · Al-'Ankabût"},
+     {n:"×26", label:"fois mentionné\ndans le Coran"},
+     {n:"1",   label:"beau-père de\nMusa (AS)"},
+   ],
+   note:"Son miracle n'était pas spectaculaire. Son miracle, c'était son discours — une éloquence et une sagesse si pures qu'on le surnomma Khatîb ul-Anbiyâ', l'Orateur des Prophètes. La parole juste est un miracle."},
+
+  {type:"lessons",accent:"#1B9A5E",bg:"#001a0d",chapter:"Section H — Les leçons morales et sociales",
+   title:"Cinq vérités intemporelles",
+   lessons:[
+     {n:"01",t:"L'honnêteté est un acte d'adoration",        b:"Tricher sur une balance, c'est trahir Allah. La probité dans les affaires est de l'ibâda — un acte de culte à part entière."},
+     {n:"02",t:"La foi authentique produit la justice",       b:"La spiritualité ne se limite pas aux actes de culte — elle englobe tous les comportements humains, surtout ceux qui impactent autrui."},
+     {n:"03",t:"La corruption détruit les sociétés de l'intérieur",b:"Madyan était riche. Madyan a péri. La puissance matérielle ne protège pas des conséquences morales et spirituelles."},
+     {n:"04",t:"La responsabilité est collective",            b:"Quand l'injustice devient systémique et que toute une société la normalise, les conséquences peuvent être globales et irréversibles."},
+     {n:"05",t:"Sabr + Tawakkul : agir et remettre à Allah", b:"Shu'ayb agissait, répétait, tenait bon sans résultats immédiats — et remettait le jugement final à Allah. C'est l'équilibre du croyant."},
+   ]},
+
+  {type:"mirror",accent:"#C9991A",bg:"#07101f",chapter:"Section I — Message universel · Et nous ?",
+   question:"Et si nous vivions à Madyan aujourd'hui — serions-nous différents ?",
+   reflections:[
+     "Dans vos affaires : vos contrats, vos prix, vos engagements tenus ou non",
+     "Dans vos paroles : ce que vous promettez, ce que vous livrez vraiment",
+     "Dans votre foi : la cohérence entre ce que vous croyez et ce que vous vivez",
+   ],
+   coda:"La réussite véritable ne se mesure pas à la prospérité matérielle — mais à la droiture morale et à la fidélité aux commandements divins. C'est en cela que le message de Shu'ayb demeure profondément pertinent et inspirant aujourd'hui."},
+
+  {type:"closing",accent:"#C9991A",bg:"#02050f",chapter:"",
+   title:"Justice · Patience · Tawakkul",
+   verse:{t:"« Certes, Allah commande l'équité, la bienfaisance et l'assistance aux proches. Et Il interdit la turpitude, l'acte répréhensible et la rébellion. »",r:"Sourate An-Nahl 16:90"},
+   dua:"اللَّهُمَّ اجْعَلْنَا مِنَ الصَّادِقِينَ الأَمِينِينَ",
+   duaFr:"Ya Allah, fais de nous des êtres sincères et dignes de confiance. Âmîn."},
+];
+
+/* ── ILLUSTRATIONS (SVG strings) ── */
+function stars(n, seed, maxY) {
+  let x = seed, out = '';
+  const rng = () => { x=(x*1664525+1013904223)&0xffffffff; return (x>>>0)/0xffffffff; };
+  for (let i=0;i<n;i++) {
+    const cx=(rng()*860).toFixed(1), cy=(rng()*maxY).toFixed(1);
+    const r=(rng()*.7+.2).toFixed(1), op=(rng()*.45+.15).toFixed(2), dur=(rng()*3+1.5).toFixed(1);
+    const op2=(+op*.3).toFixed(2), op3=Math.min(1,+op*2.2).toFixed(2);
+    out+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" opacity="${op}"><animate attributeName="opacity" values="${op2};${op3};${op2}" dur="${dur}s" repeatCount="indefinite"/></circle>`;
+  }
+  return out;
+}
+
+function getIllus(idx) {
+  const S = (n,s,m) => stars(n,s,m);
+  switch(idx) {
+    case 0: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#05090f"/>${S(70,7,340)}<ellipse cx="430" cy="460" rx="500" ry="180" fill="#1a0d00" opacity=".5"/><ellipse cx="430" cy="400" rx="300" ry="100" fill="#C9991A" opacity=".07"><animate attributeName="opacity" values=".05;.12;.05" dur="4s" repeatCount="indefinite"/></ellipse><path d="M0 360 Q180 320 350 340 Q500 355 620 318 Q730 284 860 310 L860 460 L0 460Z" fill="#120a00"/><path d="M0 400 Q250 378 500 388 Q700 396 860 376 L860 460 L0 460Z" fill="#0a0600"/><g transform="translate(720,70)"><circle r="24" fill="#c8a020" opacity=".9"><animate attributeName="r" values="22;26;22" dur="5s" repeatCount="indefinite"/></circle><circle cx="10" cy="-5" r="20" fill="#05090f"/></g><path d="M200 450 Q430 410 660 450" stroke="#C9991A" stroke-width=".8" fill="none" opacity=".2"/></svg>`;
+    case 1: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#08050f"/>${S(55,3,280)}<path d="M0 280 Q200 240 430 260 Q660 280 860 245 L860 460 L0 460Z" fill="#100818"/><path d="M60 380 Q160 340 260 360 Q360 380 430 350 Q500 322 600 340 Q700 358 800 330" stroke="#9966CC" stroke-width="1" fill="none" opacity=".15" stroke-dasharray="6,4"/></svg>`;
+    case 2: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#0f0700"/>${S(30,5,120)}<circle cx="720" cy="80" r="55" fill="#C9991A" opacity=".06"><animate attributeName="r" values="52;60;52" dur="5s" repeatCount="indefinite"/></circle><path d="M0 380 Q300 350 860 370 L860 460 L0 460Z" fill="#0a0500"/></svg>`;
+    case 3: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#080510"/>${S(45,33,220)}<ellipse cx="430" cy="280" rx="280" ry="160" fill="#9966CC" opacity=".04"><animate attributeName="rx" values="270;300;270" dur="6s" repeatCount="indefinite"/></ellipse><ellipse cx="430" cy="400" rx="350" ry="90" fill="#9966CC" opacity=".05"/><path d="M0 370 Q300 345 860 360 L860 460 L0 460Z" fill="#040308"/>${[0,45,90,135,180,225,270,315].map(a=>`<line x1="430" y1="250" x2="${(430+Math.cos(a*Math.PI/180)*200).toFixed(0)}" y2="${(250+Math.sin(a*Math.PI/180)*160).toFixed(0)}" stroke="#9966CC" stroke-width=".4" opacity=".1"/>`).join('')}<circle cx="430" cy="250" r="5" fill="#9966CC" opacity=".35"><animate attributeName="r" values="4;8;4" dur="3s" repeatCount="indefinite"/></circle></svg>`;
+    case 4: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#0d0400"/><circle cx="680" cy="80" r="50" fill="#D4814A" opacity=".08"/><path d="M0 310 Q200 270 430 285 Q660 300 860 268 L860 460 L0 460Z" fill="#120800"/><path d="M0 370 Q300 350 860 358 L860 460 L0 460Z" fill="#0a0500"/>${[[120,250],[200,240],[300,255],[560,242],[640,252],[720,244]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="9" ry="10" fill="#1a0a00"/><path d="M${x-12} ${y+9} Q${x} ${y+38} ${x+12} ${y+9}" fill="#1a0a00"/>`).join('')}<g transform="translate(432,175)"><line x1="-45" y1="12" x2="45" y2="22" stroke="#D4814A" stroke-width="2" opacity=".6"/><line x1="0" y1="-15" x2="0" y2="40" stroke="#D4814A" stroke-width="2" opacity=".6"/><circle r="6" fill="#D4814A" opacity=".7"/><ellipse cx="-45" cy="12" rx="12" ry="5" fill="#8B4513" opacity=".6"/><ellipse cx="45" cy="22" rx="18" ry="5" fill="#8B4513" opacity=".6"/></g></svg>`;
+    case 5: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#06080d"/>${S(35,41,180)}<path d="M0 350 Q300 318 860 338 L860 460 L0 460Z" fill="#030608"/>${[120,240,360,480,600,720].map(x=>`<line x1="${x}" y1="60" x2="${x+60}" y2="400" stroke="#5577AA" stroke-width=".4" opacity=".08"/>`).join('')}</svg>`;
+    case 6: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#040d06"/>${S(32,37,160)}<ellipse cx="430" cy="390" rx="380" ry="100" fill="#1B9A5E" opacity=".07"/><path d="M430 30 L395 230 L465 230Z" fill="#1B9A5E" opacity=".05"><animate attributeName="opacity" values=".03;.1;.03" dur="3.5s" repeatCount="indefinite"/></path><path d="M430 30 L412 230 L448 230Z" fill="#a0ffcc" opacity=".04"><animate attributeName="opacity" values=".02;.07;.02" dur="2.8s" repeatCount="indefinite"/></path>${[55,110,165].map(r=>`<circle cx="430" cy="230" r="${r}" fill="none" stroke="#1B9A5E" stroke-width=".5" opacity=".06"/>`).join('')}<path d="M0 360 Q300 330 860 348 L860 460 L0 460Z" fill="#020a04"/></svg>`;
+    case 7: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#060d08"/>${S(35,11,150)}<path d="M430 0 L395 220 L465 220Z" fill="#1B9A5E" opacity=".05"><animate attributeName="opacity" values=".03;.1;.03" dur="3s" repeatCount="indefinite"/></path><path d="M430 0 L414 220 L446 220Z" fill="#a0ffcc" opacity=".04"><animate attributeName="opacity" values=".03;.08;.03" dur="2.5s" repeatCount="indefinite"/></path><ellipse cx="430" cy="380" rx="320" ry="80" fill="#1B9A5E" opacity=".06"/><path d="M0 350 Q300 318 860 338 L860 460 L0 460Z" fill="#030a05"/></svg>`;
+    case 8: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#030d08"/>${S(28,43,140)}<ellipse cx="430" cy="380" rx="360" ry="100" fill="#1B9A5E" opacity=".06"/><g transform="translate(700,160)"><line x1="0" y1="-20" x2="0" y2="140" stroke="#1B9A5E" stroke-width="2" opacity=".4"/><rect x="-28" y="138" width="56" height="10" rx="4" fill="#1B9A5E" opacity=".3"/><line x1="-70" y1="30" x2="70" y2="30" stroke="#1B9A5E" stroke-width="2" opacity=".5"/><circle cy="10" r="7" fill="#1B9A5E" opacity=".5"/><line x1="-70" y1="30" x2="-80" y2="70" stroke="#1B9A5E" stroke-width="1.5" opacity=".4"/><line x1="-70" y1="30" x2="-60" y2="70" stroke="#1B9A5E" stroke-width="1.5" opacity=".4"/><path d="M-88 70 Q-70 78 -52 70" stroke="#1B9A5E" stroke-width="1.5" fill="none" opacity=".4"/><line x1="70" y1="30" x2="60" y2="70" stroke="#1B9A5E" stroke-width="1.5" opacity=".4"/><line x1="70" y1="30" x2="80" y2="70" stroke="#1B9A5E" stroke-width="1.5" opacity=".4"/><path d="M52 70 Q70 78 88 70" stroke="#1B9A5E" stroke-width="1.5" fill="none" opacity=".4"/></g><path d="M0 370 Q300 345 860 360 L860 460 L0 460Z" fill="#020a05"/></svg>`;
+    case 9: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#080010"/>${S(40,13,200)}<ellipse cx="430" cy="230" rx="260" ry="180" fill="#9966CC" opacity=".04"><animate attributeName="rx" values="250;280;250" dur="6s" repeatCount="indefinite"/></ellipse>${[0,60,120,180,240,300].map(a=>`<line x1="430" y1="230" x2="${(430+Math.cos(a*Math.PI/180)*220).toFixed(0)}" y2="${(230+Math.sin(a*Math.PI/180)*180).toFixed(0)}" stroke="#9966CC" stroke-width=".5" opacity=".1"/>`).join('')}<circle cx="430" cy="230" r="6" fill="#9966CC" opacity=".3"><animate attributeName="r" values="5;9;5" dur="3s" repeatCount="indefinite"/></circle></svg>`;
+    case 10: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#0d0000"/>${S(20,17,100)}<ellipse cx="200" cy="380" rx="220" ry="80" fill="#CC4444" opacity=".07"/><ellipse cx="650" cy="360" rx="200" ry="80" fill="#C9991A" opacity=".05"/><line x1="430" y1="80" x2="430" y2="420" stroke="#fff" stroke-width=".4" opacity=".08" stroke-dasharray="4,6"/><path d="M0 390 Q430 360 860 385 L860 460 L0 460Z" fill="#090000"/></svg>`;
+    case 11: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#030508"/>${S(65,19,300)}<g transform="translate(718,68)"><circle r="20" fill="#c8a020" opacity=".8"><animate attributeName="r" values="18;22;18" dur="5s" repeatCount="indefinite"/></circle><circle cx="8" cy="-4" r="17" fill="#030508"/></g><path d="M0 350 Q200 320 430 335 Q660 350 860 320 L860 460 L0 460Z" fill="#06080f"/><path d="M0 400 Q300 382 860 392 L860 460 L0 460Z" fill="#030406"/><g transform="translate(430,308)"><path d="M-48 2 Q-18 -13 0 -8 Q18 -3 44 8" stroke="#1a1020" stroke-width="14" fill="none" stroke-linecap="round"/><ellipse cx="-46" cy="6" rx="11" ry="7" fill="#1a1020"/><line x1="-33" y1="-2" x2="-66" y2="10" stroke="#1a1020" stroke-width="7" stroke-linecap="round"/></g><ellipse cx="430" cy="280" rx="55" ry="25" fill="#5577AA" opacity=".08"><animate attributeName="opacity" values=".05;.13;.05" dur="3s" repeatCount="indefinite"/></ellipse></svg>`;
+    case 12: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#08001f"/><ellipse cx="200" cy="100" rx="215" ry="86" fill="#1a0035" opacity=".95"/><ellipse cx="500" cy="80" rx="255" ry="76" fill="#1a0035" opacity=".95"/><ellipse cx="750" cy="110" rx="175" ry="66" fill="#1a0035" opacity=".95"/>${[[82,232],[134,212],[178,228],[234,204],[654,218],[704,198],[754,214],[804,204]].map(([x,y],i)=>`<rect x="${x}" y="${y}" width="${22+i%10}" height="300" rx="2" fill="#150028"/>`).join('')}<rect y="374" width="860" height="86" fill="#060010"/><g opacity="0"><animate attributeName="opacity" values="0;0;0;1;1;0;0;1;0;0" dur="4s" repeatCount="indefinite"/><path d="M432 34 L402 144 L422 144 L388 274 L418 274 L374 404" stroke="#AA44FF" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M432 34 L402 144 L422 144 L388 274 L418 274 L374 404" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".7"/></g><g opacity="0"><animate attributeName="opacity" values="0;0;1;0;0;0;1;0;0;0" dur="4s" repeatCount="indefinite"/><path d="M622 24 L602 124 L618 124 L594 244" stroke="#AA44FF" stroke-width="2" fill="none" stroke-linecap="round"/></g><rect width="860" height="460" fill="#AA44FF" opacity="0"><animate attributeName="opacity" values="0;0;0;0.04;0;0;0.06;0;0;0" dur="4s" repeatCount="indefinite"/></rect></svg>`;
+    case 13: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#07101f"/>${S(45,23,180)}<ellipse cx="430" cy="350" rx="380" ry="120" fill="#C9991A" opacity=".05"/><g transform="translate(254,152)"><rect width="156" height="206" rx="4" fill="#1f1500"/><rect width="156" height="206" rx="4" fill="none" stroke="#C9991A" stroke-width=".8" opacity=".3"/>${[28,52,76,100,124,148,172].map((y,i)=>`<rect x="12" y="${y}" width="${88+i*8}" height="3" rx="2" fill="#C9991A" opacity="${(.22+i*.03).toFixed(2)}"/>`).join('')}<rect x="168" width="156" height="206" rx="4" fill="#1a1200"/><rect x="168" width="156" height="206" rx="4" fill="none" stroke="#C9991A" stroke-width=".8" opacity=".25"/>${[28,52,76,100,124,148,172].map((y,i)=>`<rect x="180" y="${y}" width="${80+i*9}" height="3" rx="2" fill="#C9991A" opacity="${(.18+i*.025).toFixed(2)}"/>`).join('')}<rect x="154" width="14" height="206" rx="2" fill="#2a1800"/></g><text x="680" y="270" text-anchor="middle" font-size="88" font-family="Georgia,serif" fill="#C9991A" opacity=".07" font-weight="bold">٢٦</text></svg>`;
+    case 14: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#001a0d"/>${S(30,27,130)}<ellipse cx="430" cy="400" rx="400" ry="110" fill="#1B9A5E" opacity=".08"/><g transform="translate(432,162)"><line x1="-125" y1="32" x2="125" y2="32" stroke="#C9991A" stroke-width="2.5" stroke-linecap="round"/><line x1="0" y1="-26" x2="0" y2="175" stroke="#C9991A" stroke-width="2.5" stroke-linecap="round"/><circle r="7" fill="#C9991A"/><ellipse cx="-125" cy="32" rx="32" ry="6" fill="#1B9A5E" opacity=".55"/><ellipse cx="125" cy="32" rx="32" ry="6" fill="#1B9A5E" opacity=".55"/></g></svg>`;
+    case 15: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#07101f"/>${S(40,29,200)}<ellipse cx="430" cy="300" rx="250" ry="130" fill="#C9991A" opacity=".05"><animate attributeName="opacity" values=".03;.09;.03" dur="4s" repeatCount="indefinite"/></ellipse><path d="M300 150 Q430 120 560 150 Q590 200 560 310 Q430 340 300 310 Q270 260 300 150Z" fill="none" stroke="#C9991A" stroke-width=".8" opacity=".15"/></svg>`;
+    case 16: return `<svg viewBox="0 0 860 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="860" height="460" fill="#02050f"/>${S(80,31,300)}<ellipse cx="432" cy="202" rx="496" ry="56" fill="#0a1530" opacity=".5" transform="rotate(-15 432 202)"/><g transform="translate(432,94)"><circle r="44" fill="#c8a020"><animate attributeName="r" values="42;47;42" dur="5s" repeatCount="indefinite"/></circle><circle cx="19" cy="-8" r="38" fill="#02050f"/></g><path d="M0 344 Q152 304 304 324 Q432 339 564 309 Q692 282 860 314 L860 460 L0 460Z" fill="#0a0800"/><path d="M0 394 Q202 372 432 382 Q652 392 860 372 L860 460 L0 460Z" fill="#060600"/><rect x="394" y="284" width="76" height="56" rx="4" fill="#080808"/><path d="M394 284 Q432 259 470 284Z" fill="#0a0a0a"/><rect x="427" y="239" width="10" height="46" rx="3" fill="#0a0a0a"/><line x1="432" y1="229" x2="432" y2="218" stroke="#C9991A" stroke-width="1.5" opacity=".45"/><g transform="translate(432,215)"><circle r="6" fill="#c8a020" opacity=".55"/><circle cx="3" cy="-1" r="5" fill="#02050f"/></g><ellipse cx="432" cy="266" rx="195" ry="36" fill="#C9991A" opacity=".04"><animate attributeName="opacity" values=".03;.08;.03" dur="4s" repeatCount="indefinite"/></ellipse></svg>`;
+    default: return '';
+  }
+}
+
+function vbox(verse, accent) {
+  if (!verse) return '';
+  return `<div class="verse-box" style="background:${accent}12;border:1px solid ${accent}33">
+    <p class="verse-text">${verse.t}</p>
+    <p class="verse-ref" style="color:${accent}">${verse.r}</p>
+  </div>`;
+}
+
+function renderSlide(s, accent) {
+  switch(s.type) {
+    case 'cover': return `
+      <div class="cover-wrap">
+        <div class="cover-ar anim-0" style="color:${accent}">${s.titleAr}</div>
+        <div class="cover-title anim-1">${s.title}</div>
+        <div class="cover-sub anim-2" style="color:${accent}">${s.sub}</div>
+        <div class="cover-tag anim-3">${s.tagline}</div>
+        <div class="anim-4">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'quote': return `
+      <div class="quote-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <p class="big-quote anim-1">${s.bigQuote}</p>
+        <p class="body-text anim-2">${s.body}</p>
+      </div>`;
+
+    case 'bio': return `
+      <div class="slide-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        ${s.facts.map((f,i)=>`
+          <div class="fact-row anim-${Math.min(i+2,7)}">
+            <span class="fact-label" style="color:${accent}">${f.l}</span>
+            <span class="fact-sep" style="background:${accent}44"></span>
+            <span class="fact-value">${f.v}</span>
+          </div>`).join('')}
+      </div>`;
+
+    case 'portrait': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="quality-grid anim-2">
+          ${s.qualities.map(q=>`
+            <div class="quality-row">
+              <span class="quality-word" style="color:${accent}">${q.w}</span>
+              <span class="quality-line">${q.l}</span>
+            </div>`).join('')}
+        </div>
+        <div class="anim-3">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'people': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="pillars-grid anim-2">
+          ${s.pillars.map(p=>`
+            <div class="pillar-card" style="background:${accent}10;border:1px solid ${accent}28">
+              <div class="pillar-icon">${p.icon}</div>
+              <div class="pillar-label" style="color:${accent}">${p.label}</div>
+              <div class="pillar-desc">${p.desc}</div>
+            </div>`).join('')}
+        </div>
+        <div class="anim-3">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'versedetail': return `
+      <div class="slide-wrap" style="display:flex;flex-direction:column;justify-content:center;min-height:360px">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="anim-2">
+          <blockquote class="blockquote-verse" style="border-left-color:${accent}">${s.vHero}</blockquote>
+          <div class="verse-ref-sm" style="color:${accent}">${s.vRef}</div>
+        </div>
+        <div class="insight-box anim-3" style="background:${accent}12;border:1px solid ${accent}28">
+          <p class="insight-text" style="color:#98b8c8">${s.insight}</p>
+        </div>
+      </div>`;
+
+    case 'tawhid': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="steps-list anim-2">
+          ${s.steps.map(st=>`
+            <div class="step-card" style="background:${accent}0d;border:1px solid ${accent}22">
+              <span class="step-n" style="color:${accent}">${st.n}</span>
+              <div>
+                <div class="step-label">${st.label}</div>
+                <div class="step-text">${st.text}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="anim-3">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'revelation': return `
+      <div class="slide-wrap" style="display:flex;flex-direction:column;justify-content:center;min-height:360px">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <div class="anim-1" style="font-size:10px;color:${accent}88;letter-spacing:1px;margin-bottom:16px">${s.eyebrow}</div>
+        <blockquote class="revelation-verse anim-2" style="border-left-color:${accent}">${s.verse}</blockquote>
+        <div class="insight-box anim-3" style="background:${accent}12;border:1px solid ${accent}28">
+          <p class="insight-text" style="color:#a0c8b0">${s.insight}</p>
+        </div>
+      </div>`;
+
+    case 'ethics': return `
+      <div class="slide-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="ethics-body anim-2" style="border-left-color:${accent}55">
+          <p class="ethics-text">${s.body}</p>
+        </div>
+        <div class="anim-3">${vbox(s.verse1, accent)}</div>
+        <div class="ethics-insight anim-4" style="background:${accent}0d;border:1px solid ${accent}22">
+          <p class="ethics-insight-text">${s.insight}</p>
+        </div>
+      </div>`;
+
+    case 'method': return `
+      <div class="slide-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title-lg anim-1">${s.title}</h2>
+        <div class="traits-grid anim-2">
+          ${s.traits.map(t=>`
+            <div class="trait-row">
+              <span class="trait-word" style="color:${accent}">${t.w}</span>
+              <span class="trait-line">${t.l}</span>
+            </div>`).join('')}
+        </div>
+        <div class="anim-3">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'dialogue': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <div class="dialogue-grid anim-1">
+          <div>
+            <div class="dialogue-head" style="color:#CC4444">${s.labelL}</div>
+            ${s.exchanges.map(e=>`<div class="dialogue-bubble" style="background:#CC444414;border:1px solid #CC444428;color:#e0b8a8">${e.them}</div>`).join('')}
+          </div>
+          <div>
+            <div class="dialogue-head" style="color:#C9991A">${s.labelR}</div>
+            ${s.exchanges.map(e=>`<div class="dialogue-bubble" style="background:#C9991A14;border:1px solid #C9991A28;color:#e8d89a">${e.him}</div>`).join('')}
+          </div>
+        </div>
+        <div class="anim-2">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'solitude': return `
+      <div class="solitude-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <p class="big-quote2 anim-1">${s.bigQuote}</p>
+        <p class="solitude-body anim-2">${s.body}</p>
+        <div class="coda-box anim-3" style="background:${accent}15;border:1px solid ${accent}35">
+          <span class="coda-text" style="color:${accent}">${s.coda}</span>
+        </div>
+      </div>`;
+
+    case 'punishment': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title-lg anim-1">${s.title}</h2>
+        <p class="anim-2" style="font-size:13px;color:#606090;margin:0 0 14px;font-style:italic">${s.desc}</p>
+        <div class="events-list anim-3">
+          ${s.events.map(e=>`
+            <div class="event-card" style="background:${accent}0c;border:1px solid ${accent}22">
+              <div class="event-bar" style="background:${accent}"></div>
+              <div>
+                <div class="event-title" style="color:${accent}">${e.t}</div>
+                <div class="event-desc">${e.d}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="anim-4">${vbox(s.verse, accent)}</div>
+      </div>`;
+
+    case 'legacy': return `
+      <div class="slide-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title-lg anim-1">${s.title}</h2>
+        <div class="stats-grid anim-2">
+          ${s.stats.map(st=>`
+            <div class="stat-card" style="background:${accent}10;border:1px solid ${accent}28">
+              <div class="stat-n" style="color:${accent}">${st.n}</div>
+              <div class="stat-label">${st.label}</div>
+            </div>`).join('')}
+        </div>
+        <div class="legacy-note anim-3" style="border-left-color:${accent}55">
+          <p class="legacy-note-text">${s.note}</p>
+        </div>
+      </div>`;
+
+    case 'lessons': return `
+      <div class="slide-wrap-sm">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <h2 class="slide-title anim-1">${s.title}</h2>
+        <div class="lessons-grid anim-2">
+          ${s.lessons.map(l=>`
+            <div class="lesson-card" style="background:${accent}0e;border:1px solid ${accent}25">
+              <span class="lesson-n" style="color:${accent}">${l.n}</span>
+              <div>
+                <div class="lesson-title">${l.t}</div>
+                <div class="lesson-body">${l.b}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+
+    case 'mirror': return `
+      <div class="mirror-wrap">
+        <div class="chap anim-0" style="color:${accent}">${s.chapter}</div>
+        <p class="mirror-question anim-1">${s.question}</p>
+        <div class="reflections anim-2">
+          ${s.reflections.map((r,i)=>`
+            <div class="reflection-row">
+              <div class="reflection-num" style="border-color:${accent}55;color:${accent}">${i+1}</div>
+              <span class="reflection-text">${r}</span>
+            </div>`).join('')}
+        </div>
+        <div class="mirror-coda anim-3" style="border-left-color:${accent}55">
+          <p class="mirror-coda-text" style="color:${accent}">${s.coda}</p>
+        </div>
+      </div>`;
+
+    case 'closing': return `
+      <div class="closing-wrap">
+        <div class="closing-pills anim-0">
+          ${s.title.split(' · ').map(w=>`<span class="closing-pill" style="background:${accent}1a;border-color:${accent}55;color:${accent}">${w}</span>`).join('')}
+        </div>
+        <div class="anim-1">${vbox(s.verse, accent)}</div>
+        <div class="dua-box anim-2" style="background:#0d1a2e;border:1px solid ${accent}33">
+          <div class="dua-arabic" style="color:${accent}">${s.dua}</div>
+          <p class="dua-fr">${s.duaFr}</p>
+        </div>
+      </div>`;
+
+    default: return '';
+  }
+}
+
+let cur = 0;
+const total = SLIDES.length;
+
+function render(idx) {
+  const s = SLIDES[idx];
+  const accent = s.accent;
+  const card = document.getElementById('card');
+  const illusEl = document.getElementById('card-illus');
+  const bodyEl = document.getElementById('card-body');
+
+  card.style.background = s.bg;
+  card.style.border = `1px solid ${accent}20`;
+  card.style.boxShadow = `0 8px 60px ${accent}0c`;
+  illusEl.innerHTML = getIllus(idx);
+  bodyEl.innerHTML = renderSlide(s, accent);
+
+  document.getElementById('prog-fill').style.width = `${((idx+1)/total)*100}%`;
+  document.getElementById('prog-fill').style.background = accent;
+  document.getElementById('chap-label').textContent = s.chapter || '—';
+  document.getElementById('chap-label').style.color = accent;
+  document.getElementById('slide-num').textContent = `${idx+1} / ${total}`;
+
+  const prev = document.getElementById('btn-prev');
+  const next = document.getElementById('btn-next');
+  prev.disabled = idx === 0;
+  prev.style.background = idx === 0 ? '#090e18' : '#162030';
+  prev.style.color = idx === 0 ? '#1a2535' : '#6080a0';
+  next.disabled = idx === total-1;
+  next.style.background = idx === total-1 ? '#090e18' : accent;
+  next.style.color = idx === total-1 ? '#1a2535' : '#1a0d00';
+  next.style.fontWeight = 'bold';
+
+  const dots = document.getElementById('dots');
+  dots.innerHTML = SLIDES.map((_,i) => `<button class="dot" onclick="goto(${i})" style="width:${i===idx?20:6}px;background:${i===idx?accent:'#162030'}"></button>`).join('');
+}
+
+function go(dir) {
+  cur = Math.max(0, Math.min(total-1, cur+dir));
+  render(cur);
+}
+function goto(i) { cur=i; render(i); }
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight') go(1);
+  if (e.key==='ArrowLeft') go(-1);
+});
+
+render(0);
+</script>
+</body>
+</html>
